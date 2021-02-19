@@ -13,21 +13,25 @@ class Synonym {
     this.word,
     this.synonym,
     this.description,
+    this.id,
   });
 
   String word;
   String synonym;
   String description;
+  int id;
 
   factory Synonym.fromJson(Map<String, dynamic> json) => Synonym(
-    word: json["word"],
-    synonym: json["synonym"],
-    description: json["description"],
-  );
+        word: json["word"],
+        synonym: json["synonym"],
+        description: json["description"],
+        id: json["id"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "word": word,
-    "synonym": synonym,
-    "description": description,
-  };
+        "word": word,
+        "synonym": synonym,
+        "description": description,
+        "id": id,
+      };
 }
