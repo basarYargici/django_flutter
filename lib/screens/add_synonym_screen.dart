@@ -66,8 +66,7 @@ class AddSynonymScreen extends StatelessWidget {
             onPressed: () async {
               if (_formKey.currentState.validate()) {
                 _provider.addData(
-                    modelName: _modelName,
-                    synonym: Synonym(word: _wordController.text, synonym: _synonymController.text, description: _descriptionController.text));
+                    model: Synonym(word: _wordController.text, synonym: _synonymController.text, description: _descriptionController.text));
                 Navigator.pop(context);
               }
             },

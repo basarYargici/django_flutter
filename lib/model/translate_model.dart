@@ -1,4 +1,6 @@
-class Translate {
+import 'package:local_host_workspace/model/%C4%B1_model.dart';
+
+class Translate with IModel{
   int id;
   String english;
   String turkish;

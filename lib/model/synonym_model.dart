@@ -4,11 +4,13 @@
 
 import 'dart:convert';
 
+import 'package:local_host_workspace/model/%C4%B1_model.dart';
+
 List<Synonym> synonymFromJson(String str) => List<Synonym>.from(json.decode(str).map((x) => Synonym.fromJson(x)));
 
 String synonymToJson(List<Synonym> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class Synonym {
+class Synonym with IModel {
   Synonym({
     this.word,
     this.synonym,
