@@ -2,18 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:local_host_workspace/model/%C4%B1_model.dart';
-import 'package:local_host_workspace/model/synonym_model.dart';
 import 'package:http/http.dart' as http;
 
 class Service with ChangeNotifier {
   Future<List<dynamic>> getData({IModel model}) async {
     String modelName = model.runtimeType.toString().toLowerCase();
-    print("model $model");
-    print("modelName $modelName");
+    print("MODEL : $model");
+    print("MODELNAME: $modelName");
     var url = "http://10.0.2.2:8000/$modelName/?format=json";
     http.Response response = await http.get(url);
     print('Response $modelName body: ${response.body}, ${response.body.runtimeType}');
-    return synonymFromJson(response.body);
+    return model.fromJson(response.body);
   }
 
   Future deleteData({IModel model, int id}) async {

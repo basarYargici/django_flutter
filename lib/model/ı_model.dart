@@ -1,1 +1,3 @@
-abstract class IModel {}
+abstract class IModel {
+  List<dynamic> fromJson(String str);
+}

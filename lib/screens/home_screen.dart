@@ -1,23 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:local_host_workspace/model/%C4%B1_model.dart';
 import 'package:local_host_workspace/model/model_enum.dart';
 import 'package:local_host_workspace/model/synonym_model.dart';
 import 'package:local_host_workspace/model/translate_model.dart';
+import 'package:local_host_workspace/screens/detail_screen.dart';
 import 'package:local_host_workspace/service/service.dart';
 import 'package:provider/provider.dart';
 
-class NewHome extends StatefulWidget {
+import 'add_synonym_screen.dart';
+
+class HomeScreen extends StatefulWidget {
   @override
-  _NewHomeState createState() => _NewHomeState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _NewHomeState extends State<NewHome> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   TabController _tabController; // To control switching tabs
   ScrollController _scrollViewController; // To control scrolling
 
-  List<Synonym> futureData;
   IModel _model;
+  Future<List<dynamic>> _synonymData;
+  Future<List<dynamic>> _translateData;
 
   @override
   void initState() {
@@ -27,22 +32,25 @@ class _NewHomeState extends State<NewHome> with SingleTickerProviderStateMixin {
       length: 2,
       vsync: this,
     );
+    _model = Synonym();
+    _synonymData = Service().getData(model: Synonym());
+    _translateData = Service().getData(model: Translate());
     _tabController.addListener(() {
       print("Entered");
-      setState(() {
+      if (_tabController.indexIsChanging) {
         switch (_tabController.index) {
           case 0:
             _model = Synonym();
-            print("Model init $_model");
+            _synonymData = Service().getData(model: Synonym());
             break;
           case 1:
             _model = Translate();
-            print("Model init $_model");
+            _translateData = Service().getData(model: Translate());
             break;
           default:
             throw Exception("got to _tabController listener");
         }
-      });
+      }
     });
     _scrollViewController = ScrollController();
   }
@@ -56,168 +64,165 @@ class _NewHomeState extends State<NewHome> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Service>(
-      builder: (context, serviceData, child) {
-        return SafeArea(
-          child: Scaffold(
-            body: NestedScrollView(
-              controller: _scrollViewController,
-              headerSliverBuilder: (BuildContext context, bool boxIsScrolled) {
-                return <Widget>[
-                  SliverAppBar(
-                    title: Text(
-                      "Flutter && Django",
-                    ),
-                    centerTitle: true,
-                    floating: true,
-                    pinned: true,
-                    snap: true,
-                    bottom: TabBar(
-                      controller: _tabController,
-                      tabs: <Widget>[
-                        Tab(
-                          child: Text(Model.values[0].convert(Model.values[0]).toUpperCase()),
-                        ),
-                        Tab(
-                          child: Text(Model.values[1].convert(Model.values[1]).toUpperCase()),
-                        ),
-                      ],
-                      indicatorColor: Colors.white,
-                    ),
-                  ),
-                ];
-              },
-              body: TabBarView(
-                controller: _tabController,
-                children: [
-                  FutureBuilder(
-                    future: serviceData.getData(model: _model),
-                    builder: (context, snapshot) {
-                      futureData = snapshot.data;
-                      if (snapshot.hasData) {
-                        if (futureData.isEmpty) {
-                          return Center(child: Text("EEEEEEEMMMPTY"));
-                        }
-                        return Text("Listtile");
-                      }
-                      return Center(child: CircularProgressIndicator());
-                    },
-                  ),
-                  Text("a"),
-                ],
-              ),
-            ),
+    Service serviceData = Provider.of<Service>(context);
+    return SafeArea(
+      child: Scaffold(
+        body: NestedScrollView(
+          controller: _scrollViewController,
+          headerSliverBuilder: (BuildContext context, bool boxIsScrolled) {
+            return [
+              buildSliverAppBar(),
+            ];
+          },
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              buildSynonymView(serviceData),
+              buildTranslateView(serviceData),
+
+              // RefreshIndicator(
+              //   onRefresh: () {
+              //     return serviceData.getData(model: _model);
+              //   },
+              //   child: buildTranslateView(serviceData),
+              // ),
+            ],
           ),
-        );
-      },
-    );
-  }
-
-// FutureBuilder<List> buildFutureBuilder(Service serviceData, String _modelName) {
-//   return FutureBuilder(
-//     future: serviceData.getData(modelName: _modelName),
-//     builder: (context, snapshot) {
-//       futureData = snapshot.data;
-//       if (snapshot.hasData) {
-//         if (futureData.isEmpty) {
-//           return Center(child: Text("EEEEEEEMMMPTY"));
-//         }
-//         return buildListView(_modelName, serviceData);
-//       }
-//       return Center(child: CircularProgressIndicator());
-//     },
-//   );
-// }
-}
-/*
-class HomeScreen extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<HomeScreen> {
-  List<Synonym> futureData;
-
-  @override
-  Widget build(BuildContext context) {
-    String _modelName = Model.synonym.convert(Model.synonym);
-
-    return Scaffold(
-      appBar: buildAppBar(),
-      body: Consumer<Service>(
-        builder: (context, serviceData, child) => buildFutureBuilder(serviceData, _modelName),
+        ),
+        floatingActionButton: buildFloatingActionButton(context),
       ),
-      floatingActionButton: buildFloatingActionButton(context),
     );
   }
 
-  AppBar buildAppBar() {
-    return AppBar(
+  SliverAppBar buildSliverAppBar() {
+    return SliverAppBar(
       title: Text(
         "Flutter && Django",
       ),
       centerTitle: true,
-    );
-  }
-
-  FutureBuilder<List> buildFutureBuilder(Service serviceData, String _modelName) {
-    return FutureBuilder(
-      future: serviceData.getData(modelName: _modelName),
-      builder: (context, snapshot) {
-        futureData = snapshot.data;
-        if (snapshot.hasData) {
-          if (futureData.isEmpty) {
-            return Center(child: Text("EEEEEEEMMMPTY"));
-          }
-          return buildListView(_modelName, serviceData);
-        }
-        return Center(child: CircularProgressIndicator());
-      },
-    );
-  }
-
-  ListView buildListView(String _modelName, Service serviceData) {
-    return ListView.builder(
-      primary: true,
-      itemCount: futureData.length,
-      itemBuilder: (BuildContext context, int index) {
-        return buildDismissible(_modelName, serviceData, index, context);
-      },
-    );
-  }
-
-  Dismissible buildDismissible(String _modelName, Service serviceData, int index, BuildContext context) {
-    return Dismissible(
-      key: UniqueKey(),
-      onDismissed: (direction) {
-        print(_modelName);
-        //serviceData.deleteData(modelName: _modelName, id: futureData[index].id);
-        futureData.removeAt(index);
-      },
-      child: buildListTile(index, context),
-    );
-  }
-
-  Padding buildListTile(int index, BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4),
-      child: ListTile(
-        leading: Icon(Icons.description),
-        title: Text(futureData[index].word),
-        subtitle: Text(
-          futureData[index].description,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => DetailScreen(
-                        text: futureData[index].synonym,
-                      )));
-        },
+      floating: true,
+      pinned: true,
+      snap: true,
+      bottom: TabBar(
+        controller: _tabController,
+        tabs: <Widget>[
+          Tab(
+            child: Text(Model.values[0].convert(Model.values[0]).toUpperCase()),
+          ),
+          Tab(
+            child: Text(Model.values[1].convert(Model.values[1]).toUpperCase()),
+          ),
+        ],
+        indicatorColor: Colors.white,
       ),
+    );
+  }
+
+  FutureBuilder<List<dynamic>> buildSynonymView(Service serviceData) {
+    List<Synonym> futureSynonymList;
+    return FutureBuilder(
+      future: _synonymData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          futureSynonymList = snapshot.data;
+          if (snapshot.data != null) {
+            if (futureSynonymList.isEmpty) {
+              return Center(child: Text("EEEEEEEMMMPTY"));
+            } else {
+              return ListView.builder(
+                primary: true,
+                itemCount: futureSynonymList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Dismissible(
+                    key: UniqueKey(),
+                    onDismissed: (direction) {
+                      serviceData.deleteData(model: _model, id: futureSynonymList[index].id);
+                      futureSynonymList.removeAt(index);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 4),
+                      child: ListTile(
+                        leading: Icon(Icons.description),
+                        title: Text(futureSynonymList[index].word),
+                        subtitle: Text(
+                          futureSynonymList[index].description,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DetailScreen(
+                                        text: futureSynonymList[index].synonym,
+                                      )));
+                        },
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
+          }
+        } else if (snapshot.connectionState == ConnectionState.none) {
+          return Text('Error'); // error
+        }
+        return Center(child: CircularProgressIndicator()); // loading
+      },
+    );
+  }
+
+  FutureBuilder<List<dynamic>> buildTranslateView(Service serviceData) {
+    List<Translate> futureTranslateList;
+    return FutureBuilder(
+      future: _translateData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          futureTranslateList = snapshot.data;
+          if (snapshot.data != null) {
+            if (futureTranslateList.isEmpty) {
+              return Center(child: Text("EEEEEEEMMMPTY"));
+            } else {
+              return ListView.builder(
+                primary: true,
+                itemCount: futureTranslateList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Dismissible(
+                    key: UniqueKey(),
+                    onDismissed: (direction) {
+                      serviceData.deleteData(model: _model, id: futureTranslateList[index].id);
+                      futureTranslateList.removeAt(index);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 4),
+                      child: ListTile(
+                        leading: Icon(Icons.description),
+                        title: Text(futureTranslateList[index].english),
+                        subtitle: Text(
+                          futureTranslateList[index].id.toString(),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DetailScreen(
+                                        text: futureTranslateList[index].turkish,
+                                      )));
+                        },
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
+          }
+        } else if (snapshot.connectionState == ConnectionState.none) {
+          return Text(snapshot.error.toString()); // error
+        }
+        return Center(child: CircularProgressIndicator()); // loading
+      },
     );
   }
 
@@ -230,4 +235,3 @@ class _MyHomePageState extends State<HomeScreen> {
     );
   }
 }
-*/

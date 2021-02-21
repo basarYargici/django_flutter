@@ -36,4 +36,7 @@ class Synonym with IModel {
         "description": description,
         "id": id,
       };
+
+  @override
+  List<Synonym> fromJson(String str) => List<Synonym>.from(json.decode(str).map((x) => Synonym.fromJson(x))).toList();
 }
