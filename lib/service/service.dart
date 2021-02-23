@@ -12,6 +12,7 @@ class Service with ChangeNotifier {
     var url = "http://10.0.2.2:8000/$modelName/?format=json";
     http.Response response = await http.get(url);
     print('Response $modelName body: ${response.body}, ${response.body.runtimeType}');
+    notifyListeners();
     return model.fromJson(response.body);
   }
 

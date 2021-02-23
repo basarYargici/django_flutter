@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:local_host_workspace/model/model_enum.dart';
 import 'package:local_host_workspace/model/synonym_model.dart';
-import 'package:local_host_workspace/screens/home_screen.dart';
 import 'package:local_host_workspace/service/service.dart';
 import 'package:provider/provider.dart';
 
@@ -68,7 +67,7 @@ class AddSynonymScreen extends StatelessWidget {
               if (_formKey.currentState.validate()) {
                 _provider.addData(
                     model: Synonym(word: _wordController.text, synonym: _synonymController.text, description: _descriptionController.text));
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                Navigator.pop(context);
               }
             },
             child: Text("Add word")),

@@ -41,11 +41,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         switch (_tabController.index) {
           case 0:
             _model = Synonym();
-            _synonymData = Service().getData(model: Synonym());
+            //_synonymData = Service().getData(model: Synonym());
             break;
           case 1:
             _model = Translate();
-            _translateData = Service().getData(model: Translate());
+            //_translateData = Service().getData(model: Translate());
             break;
           default:
             throw Exception("got to _tabController listener");
@@ -77,15 +77,24 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           body: TabBarView(
             controller: _tabController,
             children: [
-              buildSynonymView(serviceData),
-              buildTranslateView(serviceData),
+              // buildSynonymView(serviceData),
+              // buildTranslateView(serviceData),
 
-              // RefreshIndicator(
-              //   onRefresh: () {
-              //     return serviceData.getData(model: _model);
-              //   },
-              //   child: buildTranslateView(serviceData),
-              // ),
+              RefreshIndicator(
+                onRefresh: () {
+                  _synonymData = serviceData.getData(model: _model);
+                  return _synonymData;
+                },
+                child: buildSynonymView(serviceData),
+              ),
+
+              RefreshIndicator(
+                onRefresh: () {
+                  _translateData = serviceData.getData(model: _model);
+                  return _translateData;
+                },
+                child: buildTranslateView(serviceData),
+              ),
             ],
           ),
         ),
@@ -127,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           futureSynonymList = snapshot.data;
           if (snapshot.data != null) {
             if (futureSynonymList.isEmpty) {
-              return Center(child: Text("EEEEEEEMMMPTY"));
+              return ListView(children: [Center(child: Text("EEEEEEEMMMPTY"))]);
             } else {
               return ListView.builder(
                 primary: true,
@@ -181,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           futureTranslateList = snapshot.data;
           if (snapshot.data != null) {
             if (futureTranslateList.isEmpty) {
-              return Center(child: Text("EEEEEEEMMMPTY"));
+              return ListView(children: [Center(child: Text("EEEEEEEMMMPTY"))]);
             } else {
               return ListView.builder(
                 primary: true,
