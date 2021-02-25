@@ -13,7 +13,7 @@ class Service with ChangeNotifier {
     var response = await http.get(url);
     print('Response $modelName body: ${response.body}, ${response.body.runtimeType}');
     notifyListeners();
-    return model.fromJson(response.body).toList();
+    return model.fromJson(response.body);
   }
 
   Future deleteData({IModel model, int id}) async {
