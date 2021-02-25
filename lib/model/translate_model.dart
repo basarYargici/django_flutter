@@ -22,15 +22,15 @@ class Translate with IModel {
   String turkish;
 
   factory Translate.fromJson(Map<String, dynamic> json) => Translate(
-        id: json["id"],
-        english: json["english"],
-        turkish: json["turkish"],
+        id: json['id'],
+        english: json['english'],
+        turkish: json['turkish'],
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "english": english,
-        "turkish": turkish,
+        'id': id,
+        'english': english,
+        'turkish': turkish,
       };
 
   @override

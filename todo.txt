@@ -1,1 +1,3 @@
-// TODO fab_circular_menu or flutter_boom_menu will be implemented
+// TODO appbar has slide problem, if user scrolls slow, it does not disappear
+// TODO list item and tab bar has problem, while sliding, list item is remaining under the tab bar
+// TODO buildSynonymView and buildTranslateView can have base widget and instantiated from it

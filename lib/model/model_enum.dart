@@ -3,6 +3,6 @@ enum Model {
   translate,
 }
 
-extension enumTypeToString on Model {
-  String convert(Model type) => type.toString().split(".")[1];
+extension EnumTypeToString on Model {
+  String convert(Model type) => type.toString().split('.')[1];
 }

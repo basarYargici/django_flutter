@@ -1,14 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:local_host_workspace/model/model_enum.dart';
-import 'package:local_host_workspace/model/synonym_model.dart';
+import 'package:local_host_workspace/model/translate_model.dart';
 import 'package:local_host_workspace/service/service.dart';
 import 'package:provider/provider.dart';
 
-class AddSynonymScreen extends StatelessWidget {
-  final TextEditingController _wordController = TextEditingController();
-  final TextEditingController _synonymController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
+class AddTranslateScreen extends StatelessWidget {
+  final TextEditingController _englishController = TextEditingController();
+  final TextEditingController _turkishController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,40 +32,29 @@ class AddSynonymScreen extends StatelessWidget {
         TextFormField(
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'WORD',
+              labelText: 'ENGLISH',
             ),
             maxLength: 60,
-            controller: _wordController,
-            validator: (value) => _validate(value, 'Please enter word')),
+            controller: _englishController,
+            validator: (value) => _validate(value, 'Please enter an English word')),
         SizedBox(
           height: 20,
         ),
         TextFormField(
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'SYNONYM',
+              labelText: 'TURKISH',
             ),
             maxLength: 60,
-            controller: _synonymController,
-            validator: (value) => _validate(value, 'Please enter synonym')),
-        SizedBox(
-          height: 20,
-        ),
-        TextFormField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'DESCRIPTION',
-            ),
-            controller: _descriptionController,
-            validator: (value) => _validate(value, 'Please enter description')),
+            controller: _turkishController,
+            validator: (value) => _validate(value, 'Please enter a Turkish synonym')),
         SizedBox(
           height: 20,
         ),
         ElevatedButton(
             onPressed: () async {
               if (_formKey.currentState.validate()) {
-                await _provider.addData(
-                    model: Synonym(word: _wordController.text, synonym: _synonymController.text, description: _descriptionController.text));
+                await _provider.addData(model: Translate(english: _englishController.text, turkish: _turkishController.text.toString()));
                 Navigator.pop(context);
               }
             },

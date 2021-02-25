@@ -5,11 +5,11 @@ import 'package:local_host_workspace/model/%C4%B1_model.dart';
 import 'package:local_host_workspace/model/model_enum.dart';
 import 'package:local_host_workspace/model/synonym_model.dart';
 import 'package:local_host_workspace/model/translate_model.dart';
+import 'package:local_host_workspace/screens/components/boomFabWidget.dart';
 import 'package:local_host_workspace/screens/detail_screen.dart';
 import 'package:local_host_workspace/service/service.dart';
 import 'package:provider/provider.dart';
 
-import 'add_synonym_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -36,7 +36,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     _synonymData = Service().getData(model: Synonym());
     _translateData = Service().getData(model: Translate());
     _tabController.addListener(() {
-      print("Entered");
       if (_tabController.indexIsChanging) {
         switch (_tabController.index) {
           case 0:
@@ -48,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             //_translateData = Service().getData(model: Translate());
             break;
           default:
-            throw Exception("got to _tabController listener");
+            throw Exception('got to _tabController listener');
         }
       }
     });
@@ -64,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    Service serviceData = Provider.of<Service>(context);
+    var serviceData = Provider.of<Service>(context);
     return SafeArea(
       child: Scaffold(
         body: NestedScrollView(
@@ -98,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             ],
           ),
         ),
-        floatingActionButton: buildFloatingActionButton(context),
+        floatingActionButton: buildBoomFAB(context),
       ),
     );
   }
@@ -106,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   SliverAppBar buildSliverAppBar() {
     return SliverAppBar(
       title: Text(
-        "Flutter && Django",
+        'Flutter && Django',
       ),
       centerTitle: true,
       floating: true,
@@ -136,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           futureSynonymList = snapshot.data;
           if (snapshot.data != null) {
             if (futureSynonymList.isEmpty) {
-              return ListView(children: [Center(child: Text("EEEEEEEMMMPTY"))]);
+              return ListView(children: [Center(child: Text('EEEEEEEMMMPTY'))]);
             } else {
               return ListView.builder(
                 primary: true,
@@ -144,6 +143,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 itemBuilder: (BuildContext context, int index) {
                   return Dismissible(
                     key: UniqueKey(),
+                    background: Container(
+                      child: Center(child: Padding(padding: EdgeInsets.all(8), child: ListTile(leading: Icon(Icons.delete)))),
+                      color: Colors.red,
+                    ),
+                    secondaryBackground: Container(
+                      child: Center(child: Padding(padding: EdgeInsets.all(8), child: ListTile(trailing: Icon(Icons.delete)))),
+                      color: Colors.red,
+                    ),
                     onDismissed: (direction) {
                       serviceData.deleteData(model: _model, id: futureSynonymList[index].id);
                       futureSynonymList.removeAt(index);
@@ -163,6 +170,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                               context,
                               MaterialPageRoute(
                                   builder: (context) => DetailScreen(
+                                        modelName: Model.values[0].convert(Model.values[0]).toUpperCase(),
                                         text: futureSynonymList[index].synonym,
                                       )));
                         },
@@ -190,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           futureTranslateList = snapshot.data;
           if (snapshot.data != null) {
             if (futureTranslateList.isEmpty) {
-              return ListView(children: [Center(child: Text("EEEEEEEMMMPTY"))]);
+              return ListView(children: [Center(child: Text('EEEEEEEMMMPTY'))]);
             } else {
               return ListView.builder(
                 primary: true,
@@ -198,6 +206,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 itemBuilder: (BuildContext context, int index) {
                   return Dismissible(
                     key: UniqueKey(),
+                    background: Container(
+                      child: Center(child: Padding(padding: EdgeInsets.all(8), child: ListTile(leading: Icon(Icons.delete)))),
+                      color: Colors.red,
+                    ),
+                    secondaryBackground: Container(
+                      child: Center(child: Padding(padding: EdgeInsets.all(8), child: ListTile(trailing: Icon(Icons.delete)))),
+                      color: Colors.red,
+                    ),
                     onDismissed: (direction) {
                       serviceData.deleteData(model: _model, id: futureTranslateList[index].id);
                       futureTranslateList.removeAt(index);
@@ -217,6 +233,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                               context,
                               MaterialPageRoute(
                                   builder: (context) => DetailScreen(
+                                        modelName: Model.values[1].convert(Model.values[1]).toUpperCase(),
                                         text: futureTranslateList[index].turkish,
                                       )));
                         },
@@ -231,15 +248,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           return Text(snapshot.error.toString()); // error
         }
         return Center(child: CircularProgressIndicator()); // loading
-      },
-    );
-  }
-
-  FloatingActionButton buildFloatingActionButton(BuildContext context) {
-    return FloatingActionButton(
-      child: Icon(Icons.add),
-      onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => AddSynonymScreen()));
       },
     );
   }

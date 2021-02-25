@@ -3,14 +3,17 @@ import 'package:flutter/material.dart';
 
 class DetailScreen extends StatelessWidget {
   final String text;
+  final String modelName;
 
-  const DetailScreen({Key key, this.text}) : super(key: key);
+  const DetailScreen({Key key, this.text, this.modelName}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Synonym"),
+        title: Text(
+            modelName
+        ),
         centerTitle: true,
         elevation: 0,
       ),

@@ -24,17 +24,17 @@ class Synonym with IModel {
   int id;
 
   factory Synonym.fromJson(Map<String, dynamic> json) => Synonym(
-        word: json["word"],
-        synonym: json["synonym"],
-        description: json["description"],
-        id: json["id"],
+        word: json['word'],
+        synonym: json['synonym'],
+        description: json['description'],
+        id: json['id'],
       );
 
   Map<String, dynamic> toJson() => {
-        "word": word,
-        "synonym": synonym,
-        "description": description,
-        "id": id,
+        'word': word,
+        'synonym': synonym,
+        'description': description,
+        'id': id,
       };
 
   @override
