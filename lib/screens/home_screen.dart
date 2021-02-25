@@ -10,7 +10,6 @@ import 'package:local_host_workspace/screens/detail_screen.dart';
 import 'package:local_host_workspace/service/service.dart';
 import 'package:provider/provider.dart';
 
-
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -32,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       length: 2,
       vsync: this,
     );
+
     _model = Synonym();
     _synonymData = Service().getData(model: Synonym());
     _translateData = Service().getData(model: Translate());
@@ -39,11 +39,18 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       if (_tabController.indexIsChanging) {
         switch (_tabController.index) {
           case 0:
-            _model = Synonym();
-            //_synonymData = Service().getData(model: Synonym());
+            try {
+              _model = Synonym();
+            } catch (e) {
+              throw Exception('syn error');
+            } //_synonymData = Service().getData(model: Synonym());
             break;
           case 1:
-            _model = Translate();
+            try {
+              _model = Translate();
+            } catch (e) {
+              throw Exception('translate error');
+            }
             //_translateData = Service().getData(model: Translate());
             break;
           default:
@@ -81,16 +88,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
               RefreshIndicator(
                 onRefresh: () {
-                  _synonymData = serviceData.getData(model: _model);
-                  return _synonymData;
+                  return _synonymData = getData(serviceData, _model);
                 },
                 child: buildSynonymView(serviceData),
               ),
-
               RefreshIndicator(
                 onRefresh: () {
-                  _translateData = serviceData.getData(model: _model);
-                  return _translateData;
+                  return _translateData = getData(serviceData, _model);
                 },
                 child: buildTranslateView(serviceData),
               ),
@@ -100,6 +104,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         floatingActionButton: buildBoomFAB(context),
       ),
     );
+  }
+
+  Future<List> getData(Service serviceData, IModel model) {
+    Future<List<dynamic>> data;
+    data = serviceData.getData(model: model);
+    return data;
   }
 
   SliverAppBar buildSliverAppBar() {
