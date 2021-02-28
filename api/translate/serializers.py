@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
-from .models import TranslateModel
+from .models import Translate
 
 
-class TranslateModelSerializer(serializers.ModelSerializer):
+class TranslateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TranslateModel
+        model = Translate
         fields = '__all__'

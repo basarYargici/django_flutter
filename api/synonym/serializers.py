@@ -1,11 +1,9 @@
-from abc import ABC
-
 from rest_framework import serializers
 
-from .models import SynonymModel
+from .models import Synonym
 
 
-class SynonymModelSerializer(serializers.ModelSerializer):
+class SynonymSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SynonymModel
+        model = Synonym
         fields = '__all__'
