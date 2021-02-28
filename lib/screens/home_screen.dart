@@ -17,24 +17,28 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   TabController _tabController; // To control switching tabs
-  ScrollController _scrollViewController; // To control scrolling
 
-  IModel _model;
-  Future<List<dynamic>> _synonymData;
-  Future<List<dynamic>> _translateData;
+  IModel _model; // Translate and Synonym extends IModel, that means we can use IModel as reference
+
+  Future<List<dynamic>> _synonymData; // Will store synonym data list
+  Future<List<dynamic>> _translateData; // Will store translate data list
 
   @override
   void initState() {
     super.initState();
+    // We will have two tab
     _tabController = TabController(
       initialIndex: 0,
       length: 2,
       vsync: this,
     );
 
+    // Declare and initialize for first time both models
     _model = Synonym();
     _synonymData = Service().getData(model: Synonym());
     _translateData = Service().getData(model: Translate());
+
+    // If tab index changes, model should be changed
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
         switch (_tabController.index) {
@@ -58,14 +62,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         }
       }
     });
-    _scrollViewController = ScrollController();
   }
 
   @override
   void dispose() {
     super.dispose();
     _tabController.dispose();
-    _scrollViewController.dispose();
   }
 
   @override
@@ -74,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     return SafeArea(
       child: Scaffold(
         body: NestedScrollView(
-          controller: _scrollViewController,
           headerSliverBuilder: (BuildContext context, bool boxIsScrolled) {
             return [
               buildSliverAppBar(),
@@ -119,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ),
       centerTitle: true,
       floating: true,
-      pinned: true,
+      pinned: false,
       snap: true,
       bottom: TabBar(
         controller: _tabController,
