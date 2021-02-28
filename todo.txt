@@ -1,4 +1,4 @@
+// TODO MUST DO Tab bar has problem, if you change tab while refresh indicator is working, it gives type error
 // TODO appbar has slide problem, if user scrolls slow, it does not disappear
 // TODO list item and tab bar has problem, while sliding, list item is remaining under the tab bar
 // TODO buildSynonymView and buildTranslateView can have base widget and instantiated from it
-// TODO Tab bar has problem, if you change tab while refresh indicator is working it gives type error
