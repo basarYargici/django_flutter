@@ -24,7 +24,7 @@ SECRET_KEY = '5*2kc#k_$ehtg)bwdb!hte)k9qjb7_hy0_3s!zw9+cnt9br@d1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['15minmail.pythonanywhere.com']
+ALLOWED_HOSTS = ['15minmail.pythonanywhere.com', '127.0.0.1']
 # ALLOWED_HOSTS = ["192.168.0.31"]
 
 # Application definition
